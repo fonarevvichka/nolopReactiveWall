@@ -15,11 +15,14 @@
 #define GRID_SIZE_X 6
 #define GRID_SIZE_Y 10
 #define N_LEDS 60
+#define SERIAL_RX 0
+#define SERIAL_TX 1
 
 uint32_t pixelArray[GRID_SIZE_Y][GRID_SIZE_X];
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(N_LEDS, PIN, NEO_GRB + NEO_KHZ800);
 
 void setup() {
+  Serial.begin(9600);
   strip.begin();
   strip.setBrightness(124); //max is 255
 
@@ -33,7 +36,14 @@ void setup() {
 }
 
 void loop() {
-  setPixel(strip.Color(0, 0, 255), 2, 4);
+  char temp;
+  if (Serial.available()) {
+    temp = Serial.read();
+  }
+  if (temp == 'a') {
+      setPixel(strip.Color(0, 0, 255), 2, 4);
+  }
+//  setPixel(strip.Color(0, 0, 255), 2, 4);
 //  updateDisplay();
   
   delay(25);
