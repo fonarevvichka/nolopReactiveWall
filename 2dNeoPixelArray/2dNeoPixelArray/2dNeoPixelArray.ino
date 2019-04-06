@@ -28,27 +28,35 @@ void setup() {
 
   for (int x = 0; x < GRID_SIZE_X; x++) {
     for (int y = 0; y < GRID_SIZE_Y; y++) {
-        pixelArray[y][x] = strip.Color(25, 25, 25);
+        pixelArray[y][x] = strip.Color(10, 10, 10);
     }
   }
+  pinMode(13, OUTPUT);
   updateDisplay();
 }
 
 int counter = 0;
+int data = -1;
+int dataa, datab;
 void loop() {
-//  int data = -1;
-//  if (data == -1) counter = 0;
-//  
-//  if (Serial.available()) {
-//    data = Serial.read();
-//  }
-//  if (data != -1) {
-//    setPixel(strip.Color(data, data, data, counter / GRID_SIZE_X, counter % GRID_SIZE_Y);
-//  }
-  updateDisplay();
-//  counter++;
-//  counter = counter % 59;
-//  delay(20);
+  if (data == -1) {
+    counter = 0;
+  }
+  String tempa, tempb, tempc;
+  if (Serial.available()) {
+    tempa = Serial.read();
+    data = tempa.toInt();
+    tempb = Serial.read();
+    dataa = tempb.toInt();
+    tempc = Serial.read();
+    datab = tempc.toInt();
+    if (data != -1) {
+      setPixel(strip.Color(data,dataa,datab),counter / (GRID_SIZE_Y-1), counter % (GRID_SIZE_Y));
+    }
+
+    counter++;
+  }
+  delay(1);
 }
 
 static void updateDisplay() {
@@ -59,14 +67,6 @@ static void updateDisplay() {
   }
   strip.show();
 }
-//static void chase(uint32_t c) {
-//  for(uint16_t i=0; i<strip.numPixels()+4; i++) {
-//      strip.setPixelColor(i  , c); // Draw new pixel
-//      strip.setPixelColor(i-4, 0); // Erase pixel a few steps back
-//      strip.show();
-//      delay(25);
-//  }
-//}
 
 static void setPixel(uint32_t color, int x, int y) {
   int convertedPixelNum = 0;
@@ -74,7 +74,7 @@ static void setPixel(uint32_t color, int x, int y) {
   if (y % 2 == 0) { //even row
     convertedPixelNum = x + GRID_SIZE_X * y;
   } else {
-    convertedPixelNum = (GRID_SIZE_X - (x+1)) + GRID_SIZE_X * y;
+    convertedPixelNum = (GRID_SIZE_X -(x+1)) + GRID_SIZE_X * y;
   }
   strip.setPixelColor(convertedPixelNum, color);
   strip.show();
